@@ -2,9 +2,11 @@ import pygame
 import random
 from pygame.locals import *
 from snake import Snake
+from apple import Apple
 
 BLOCK_SIZE = 20   # Size of blocks
 SCREEN_SIZE = 30  # The width and height of the screen in number of blocks
+FONT_SIZE = 18
 
 
 def mul(t, n):
@@ -29,13 +31,15 @@ snake_skin = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
 snake_skin.fill((255, 255, 255))
 snake = Snake(snake_skin, SCREEN_SIZE)
 
-font = pygame.font.SysFont("arial", 18)
 
-apple_pos = on_grid_random()
-apple = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
-apple.fill((255, 0, 0))
-apple_num = 14
-apple_text = font.render(str(apple_num), 1, (255,255,0))
+apple_sprite = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
+apple_sprite.fill((255, 0, 0))
+apple = Apple(
+    apple_sprite,  # sprite
+    on_grid_random(),  # pos
+    14,  # num
+    pygame.font.SysFont("arial", FONT_SIZE)  # font
+)
 
 clock = pygame.time.Clock()
 
@@ -44,19 +48,20 @@ while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
+            quit()
 
         if event.type == KEYDOWN:
             snake.listen(event)
 
-    if snake.collision(apple_pos):
-        apple_pos = on_grid_random()
+    if snake.collision(apple.pos):
+        apple.change(on_grid_random(), random.randint(0, 99))
         snake.grow()
 
     snake.update()
 
     screen.fill((0, 0, 0))
-    screen.blit(apple, (apple_pos[0] * BLOCK_SIZE, apple_pos[1] * BLOCK_SIZE))
-    screen.blit(apple_text, (apple_pos[0] * BLOCK_SIZE, apple_pos[1] * BLOCK_SIZE))
+
+    apple.drawn(screen, 20)
     snake.drawn(screen, BLOCK_SIZE)
 
     pygame.display.update()
