@@ -6,10 +6,6 @@ DOWN = 2
 LEFT = 3
 
 
-def collision(c1, c2):
-    return (c1[0] == c2[0]) and (c1[1] == c2[1])
-
-
 class Snake:
     def __init__(self, skin, SCREEN_SIZE):
         self.SCREEN_SIZE = SCREEN_SIZE
@@ -48,15 +44,13 @@ class Snake:
                 self.direction = RIGHT
 
     def collision(self, tup):
-        return collision(self.snake[0], tup)
+        return (self.snake[0][0] == tup[0]) and (self.snake[0][1] == tup[1])
 
     def auto_collision(self):
-        for ki, i in enumerate(self.snake):
-            for kj, j in enumerate(self.snake):
-                if kj == ki:
-                    continue
-                if collision(i, j):
-                    return True
+        for i in self.snake[1:]:
+            if self.collision(i):
+                return True
+
         return False
 
     def grow(self):

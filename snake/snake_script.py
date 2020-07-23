@@ -29,7 +29,7 @@ snake_skin = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
 snake_skin.fill((255, 255, 255))
 snake = Snake(snake_skin, SCREEN_SIZE)
 
-font = pygame.font.SysFont("arial", BLOCK_SIZE - 1)
+font = pygame.font.SysFont("arial", 18)
 
 apple_pos = on_grid_random()
 apple = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
