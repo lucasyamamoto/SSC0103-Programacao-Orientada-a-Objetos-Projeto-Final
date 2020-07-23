@@ -3,7 +3,8 @@ import random
 from pygame.locals import *
 from snake import Snake
 
-BLOCK = 10
+BLOCK_SIZE = 20   # Size of blocks
+SCREEN_SIZE = 30  # The width and height of the screen in number of blocks
 
 
 def mul(t, n):
@@ -11,8 +12,8 @@ def mul(t, n):
 
 
 def on_grid_random():
-    x = random.randint(0, 59)
-    y = random.randint(0, 59)
+    x = random.randint(0, SCREEN_SIZE - 1)
+    y = random.randint(0, SCREEN_SIZE - 1)
     return (x, y)
 
 
@@ -21,18 +22,20 @@ def collision(c1, c2):
 
 
 pygame.init()
-screen = pygame.display.set_mode((600, 600))
+screen = pygame.display.set_mode((SCREEN_SIZE * BLOCK_SIZE, SCREEN_SIZE * BLOCK_SIZE))
 pygame.display.set_caption('Snake')
 
-snake_skin = pygame.Surface((10, 10))
+snake_skin = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
 snake_skin.fill((255, 255, 255))
+snake = Snake(snake_skin, SCREEN_SIZE)
 
-snake = Snake(snake_skin)
+font = pygame.font.SysFont("arial", BLOCK_SIZE - 1)
 
 apple_pos = on_grid_random()
-apple = pygame.Surface((10, 10))
+apple = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
 apple.fill((255, 0, 0))
-
+apple_num = 14
+apple_text = font.render(str(apple_num), 1, (255,255,0))
 
 clock = pygame.time.Clock()
 
@@ -52,7 +55,8 @@ while True:
     snake.update()
 
     screen.fill((0, 0, 0))
-    screen.blit(apple, (apple_pos[0] * 10, apple_pos[1] * 10))
-    snake.drawn(screen, 10)
+    screen.blit(apple, (apple_pos[0] * BLOCK_SIZE, apple_pos[1] * BLOCK_SIZE))
+    screen.blit(apple_text, (apple_pos[0] * BLOCK_SIZE, apple_pos[1] * BLOCK_SIZE))
+    snake.drawn(screen, BLOCK_SIZE)
 
     pygame.display.update()

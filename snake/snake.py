@@ -11,7 +11,8 @@ def collision(c1, c2):
 
 
 class Snake:
-    def __init__(self, skin):
+    def __init__(self, skin, SCREEN_SIZE):
+        self.SCREEN_SIZE = SCREEN_SIZE
         self.snake = [(20, 20), (21, 20), (22, 20)]
         self.skin = skin
         self.direction = LEFT
@@ -69,13 +70,13 @@ class Snake:
 
         new_pos = ()
         if self.direction == UP:
-            new_pos = (self.snake[0][0], (self.snake[0][1] - 1) % 60)
+            new_pos = (self.snake[0][0], (self.snake[0][1] - 1) % self.SCREEN_SIZE)
         if self.direction == DOWN:
-            new_pos = (self.snake[0][0], (self.snake[0][1] + 1) % 60)
+            new_pos = (self.snake[0][0], (self.snake[0][1] + 1) % self.SCREEN_SIZE)
         if self.direction == RIGHT:
-            new_pos = ((self.snake[0][0] + 1) % 60, self.snake[0][1])
+            new_pos = ((self.snake[0][0] + 1) % self.SCREEN_SIZE, self.snake[0][1])
         if self.direction == LEFT:
-            new_pos = ((self.snake[0][0] - 1) % 60, self.snake[0][1])
+            new_pos = ((self.snake[0][0] - 1) % self.SCREEN_SIZE, self.snake[0][1])
 
         self.snake.insert(0, new_pos)
 
