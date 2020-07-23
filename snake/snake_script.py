@@ -4,10 +4,6 @@ from pygame.locals import *
 from snake import Snake
 
 BLOCK = 10
-UP = 0
-RIGHT = 1
-DOWN = 2
-LEFT = 3
 
 
 def mul(t, n):
@@ -15,9 +11,9 @@ def mul(t, n):
 
 
 def on_grid_random():
-    x = random.randint(0, 59 * BLOCK)
-    y = random.randint(0, 59 * BLOCK)
-    return (x//BLOCK, y//BLOCK)
+    x = random.randint(0, 59)
+    y = random.randint(0, 59)
+    return (x, y)
 
 
 def collision(c1, c2):
