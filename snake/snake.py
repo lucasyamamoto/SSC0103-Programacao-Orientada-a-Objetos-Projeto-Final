@@ -1,3 +1,4 @@
+import pygame
 from pygame.locals import *
 
 UP = 0
@@ -19,31 +20,31 @@ class Snake:
             self.fast = False
             if self.direction == UP:
                 self.fast = True
-            if self.direction != DOWN:  # Para o snake nao voltar
+            if self.direction != DOWN:  # Para o snake nao dar meia volta
                 self.direction = UP
 
-        if event.key == K_DOWN:
+        elif event.key == K_DOWN:
             self.fast = False
             if self.direction == DOWN:
                 self.fast = True
             if self.direction != UP:
                 self.direction = DOWN
 
-        if event.key == K_LEFT:
+        elif event.key == K_LEFT:
             self.fast = False
             if self.direction == LEFT:
                 self.fast = True
             if self.direction != RIGHT:
                 self.direction = LEFT
 
-        if event.key == K_RIGHT:
+        elif event.key == K_RIGHT:
             self.fast = False
             if self.direction == RIGHT:
                 self.fast = True
             if self.direction != LEFT:
                 self.direction = RIGHT
 
-    def collision(self, tup):
+    def collision(self, tup): # Test collision with the head of snake
         return (self.snake[0][0] == tup[0]) and (self.snake[0][1] == tup[1])
 
     def auto_collision(self):
@@ -53,12 +54,14 @@ class Snake:
 
         return False
 
-    def grow(self):
+    def grow(self): # Add a block on snake
         self.snake.append((0, 0))
 
     def update(self):
         if self.auto_collision():
             self.snake = [(20, 20), (21, 20), (22, 20)]
+            self.direction = LEFT
+            self.fast = False
 
         self.snake.pop()
 
@@ -74,6 +77,7 @@ class Snake:
 
         self.snake.insert(0, new_pos)
 
-    def drawn(self, screen, ratio):
+    def drawn(self, screen, size):
+        
         for pos in self.snake:
-            screen.blit(self.skin, (pos[0] * ratio, pos[1] * ratio))
+            screen.blit(self.skin, (pos[0] * size, pos[1] * size))
