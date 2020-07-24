@@ -4,6 +4,7 @@ from pygame.locals import *
 from snake import Snake
 from apple import Apple
 
+
 BLOCK_SIZE = 20   # Size of blocks
 SCREEN_SIZE = 30  # The width and height of the screen in number of blocks
 FONT_SIZE = 18
@@ -21,19 +22,36 @@ def mul(t, n):
 
 
 def on_grid_random():
+    """
+    This function calculate a random position for a object on the screen
+
+    :returns:
+    tuple: Random position
+    """
     x = random.randint(0, SCREEN_SIZE - 2)
     y = random.randint(0, SCREEN_SIZE - 2)
     return (x, y)
 
 
 def collision(c1, c2):
+
     return (c1[0] == c2[0]) and (c1[1] == c2[1])
 
 def prime_apple_randomizer():
+    """
+    This function choose a random prime number from the PRIME_NUMBERS list
+    :return:
+    int: Random prime number
+    """
     number = random.choice(PRIME_NUMBERS)
 
     return int(number)
 def normal_apple_randomizer():
+    """
+    This function chosse a not-prime random number between 0 and 99
+    :return:
+    int:
+    """
     number = random.randint(0 ,99)
     while number in PRIME_NUMBERS:
         number = random.randint(0, 99)
@@ -42,7 +60,8 @@ def normal_apple_randomizer():
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_SIZE * BLOCK_SIZE, SCREEN_SIZE * BLOCK_SIZE))
 pygame.display.set_caption('Snake')
-##### MENU ########################
+
+##### TUTORIAL ########################
 score_font = pygame.font.Font('freesansbold.ttf', 13)
 score_screen = score_font.render(f'{tutorial1}', True, (255, 255, 255))
 score_rect = score_screen.get_rect()
@@ -96,6 +115,9 @@ clock = pygame.time.Clock()
 
 
 while True:
+    """
+    This is the main looping of the game, resposible for update the screen,snake and apples
+    """
     clock.tick(30 if snake.fast else 10)
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -104,9 +126,6 @@ while True:
 
         if event.type == KEYDOWN:
             snake.listen(event)
-
-
-
 
     if snake.collision(prime_apple.pos):
         prime_apple.change(on_grid_random(), prime_apple_randomizer())
@@ -134,6 +153,9 @@ while True:
     pygame.display.update()
 
 while True:
+        """
+        This is the Game over menu looping. Responsible for the game-over screen and score
+        """
         game_over_font = pygame.font.Font('freesansbold.ttf', 75)
         game_over_screen = game_over_font.render(f'Game Over', True, (255, 255, 255))
         game_over_rect = game_over_screen.get_rect()
