@@ -12,8 +12,9 @@ class GameObject(ABC):
         self._height = height
         self._width = width
         # Scale image if it doesn't match object's size
-        if image is not None and (image.get_width != width or image.get_height != height):
+        if image is not None and (image.get_width() != width or image.get_height() != height):
             image = pygame.transform.smoothscale(image, (width, height))
+            print((image.get_width(), width, height))
         self._image = image
 
     @property
@@ -49,8 +50,12 @@ class GameObject(ABC):
         return self._image
 
     def distance(self, obj) -> float:
-        return math.sqrt((self.x - obj.x) ** 2 + (self.y - obj.y) ** 2)
+        return math.sqrt(((self.x - obj.x) ** 2) + ((self.y - obj.y) ** 2))
 
+    def display(self, window):
+        if self.image is not None:
+            window.blit(self.image, (self.x - self.width//2, self.y - self.height//2))
+    
     @abstractmethod
     def max_radius(self) -> float:
         ...
@@ -58,6 +63,7 @@ class GameObject(ABC):
     @abstractmethod
     def collision(self, obj) -> bool:
         ...
+
 
 class CircularObject(GameObject):
     def __init__(self, name='Circle', x=0, y=0, radius=0, image=None):
