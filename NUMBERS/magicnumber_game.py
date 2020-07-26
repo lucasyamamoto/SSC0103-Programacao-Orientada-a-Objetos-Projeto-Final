@@ -180,7 +180,7 @@ class MagicNumber:
         for i in range(3):
             for j in range(3):
                 if(self.grid[i][j] != self.magic_square[i][j]):
-                    win = False
+                    self.win = False
                     return
         self.win = True
         return
