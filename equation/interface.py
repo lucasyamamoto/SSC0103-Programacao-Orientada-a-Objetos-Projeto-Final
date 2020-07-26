@@ -6,25 +6,44 @@ class InterfaceManager(ABC):
     KEYMAXTICK = 60
 
     def __init__(self, elements = []):
+        """
+        Constructor of the InterfaceManager object
+
+        :param elements: List containing the InterfaceElement objects of an interface
+        :raise TypeError: Element list contain something other than InterfaceElement objects
+        """
         if(not all(isinstance(elem, InterfaceElement) for elem in elements)):
             raise TypeError("Element list must be composed of interface elements")
         self._elements = elements
 
     @property
     def elements(self) -> list:
+        """Getter of the elements attribute"""
         return self._elements
 
     def display(self, window):
+        """
+        Display elements on window
+
+        :param window: Window surface to display the elements
+        """
         for elem in self._elements:
             elem.display(window)
 
     @abstractmethod
     def listen(self, game, event):
+        """
+        Listen for events in the interface
+
+        :param game: Equation object containin the currently running game
+        :param event: Current event to listen
+        """
         ...
 
 class MainMenu(InterfaceManager):
     FONTCOLOR = (0, 0, 0)
     def __init__(self):
+        """Constructor of the main menu"""
         width, height = pygame.display.get_surface().get_size()
 
         # Cria o título do menu
@@ -36,6 +55,12 @@ class MainMenu(InterfaceManager):
         super().__init__([title, start_button, exit_button])
 
     def listen(self, game, event):
+        """
+        Listen for events in the main menu
+
+        :param game: Equation object containin the currently running game
+        :param event: Current event to listen
+        """
         mouse_pos = pygame.mouse.get_pos()
         
         for elem in self._elements:
@@ -58,6 +83,11 @@ class LevelSelection(InterfaceManager):
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self, num_levels: int):
+        """
+        Constructor of the LevelSelection object
+
+        :param int num_levels: Number of levels to be displayed
+        """
         width, height = pygame.display.get_surface().get_size()
         
         # Cria o título do menu
@@ -75,6 +105,12 @@ class LevelSelection(InterfaceManager):
         super().__init__(level_buttons + [title])
 
     def listen(self, game, event):
+        """
+        Listen for events in the level selection screen
+
+        :param game: Equation object containin the currently running game
+        :param event: Current event to listen
+        """
         mouse_pos = pygame.mouse.get_pos()
         
         for elem in self._elements:
@@ -97,6 +133,11 @@ class GameInterface(InterfaceManager):
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self, level: Level):
+        """
+        Constructor of the GameInterface object
+
+        :param Level level: Currently running level
+        """
         self._equation = [0.0, 0.0, 0.0]
         self._attempt = False
         self._move_right = None
@@ -145,25 +186,36 @@ class GameInterface(InterfaceManager):
 
     @property
     def equation(self) -> tuple:
+        """Getter of the equation attribute"""
         return self._equation
 
     @property
     def attempt(self) -> bool:
+        """Getter of the attempt attribute"""
         return self._attempt
 
     @attempt.setter
     def attempt(self, new_value: bool):
+        """Setter of the attempt attribute"""
         self._attempt = new_value
 
     @property
     def move_right(self) -> bool:
+        """Getter of the move_right attribute"""
         return self._move_right
 
     @move_right.setter
     def move_right(self, right: bool):
+        """Setter of the equation attribute"""
         self._move_right = right
 
     def listen(self, game, event):
+        """
+        Listen for events in the game level interface
+
+        :param game: Equation object containin the currently running game
+        :param event: Current event to listen
+        """
         # Mouse related events
         mouse_pos = pygame.mouse.get_pos()
 
@@ -217,6 +269,7 @@ class LevelCompletedInterface(InterfaceManager):
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self):
+        """Constructor of the LevelCompletedInterface object"""
         # Create victory message
         width, height = pygame.display.get_surface().get_size()
         congratulation_text = TextBox('congratulationtext', 'Nível concluído!', self.FONTCOLOR, width//2, height//3, size=40)
@@ -232,6 +285,12 @@ class LevelCompletedInterface(InterfaceManager):
         super().__init__([interface_background, congratulation_text, back_button])
         
     def listen(self, game, event):
+        """
+        Listen for events in the congratulations window
+
+        :param game: Equation object containin the currently running game
+        :param event: Current event to listen
+        """
         mouse_pos = pygame.mouse.get_pos()
 
         # Listen as usual
@@ -254,6 +313,11 @@ class PopUp(InterfaceManager):
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self, messages: list):
+        """
+        Constructor of the PopUp object
+
+        :param list messages: List of strings to show in the pop-up
+        """
         # Create messages
         width, height = pygame.display.get_surface().get_size()
         message_text = []
@@ -272,6 +336,12 @@ class PopUp(InterfaceManager):
         super().__init__([interface_background, back_button] + message_text)
 
     def listen(self, game, event):
+        """
+        Listen for events in the pop-up window
+
+        :param game: Equation object containin the currently running game
+        :param event: Current event to listen
+        """
         mouse_pos = pygame.mouse.get_pos()
 
         # Listen as usual
@@ -292,6 +362,15 @@ class PopUp(InterfaceManager):
 
 class InterfaceElement:
     def __init__(self, name='interfaceelement', x=0, y=0, image=None):
+        """
+        Constructor of the InterfaceElement object
+
+        :param name: Identifier for event listening
+        :param x: x coordinate of the upper-left corner of the element
+        :param y: y coordinate of the upper-left corner of the element
+        :param image: Surface to be displayed or None
+        :raise TypeError: Image is not a surface object nor None
+        """
         if image is None or isinstance(image, pygame.Surface):
             self._image = image
         else:
@@ -302,36 +381,53 @@ class InterfaceElement:
 
     @property
     def name(self):
+        """Getter of the name attribute"""
         return self._name
 
     @property
     def x(self):
+        """Getter of the x attribute"""
         return self._x
     
     @x.setter
     def x(self, new_x):
+        """Setter of the name attribute"""
         self._x = new_x
 
     @property
     def y(self):
+        """Getter of the y attribute"""
         return self._y
     
     @y.setter
     def y(self, new_y):
+        """Setter of the name attribute"""
         self._y = new_y
 
     @property
     def width(self):
+        """Getter of the width attribute"""
         return self._image.get_width() if self._image is not None else 0
 
     @property
     def height(self):
+        """Getter of the height attribute"""
         return self._image.get_height() if self._image is not None else 0
 
     def hover(self, mouse_pos: tuple) -> bool:
+        """
+        Check if mouse is hovering this object
+
+        :param tuple mouse_pos: Position of the mouse
+        """
         return mouse_pos[0] >= self.x and mouse_pos[0] <= self.x+self.width and mouse_pos[1] >= self.y and mouse_pos[1] <= self.y+self.height
 
     def display(self, window):
+        """
+        Display object on a window
+
+        :param window: Window surface to display the object
+        """
         if self._image is not None:
             window.blit(self._image, (self._x, self._y))
 
@@ -341,6 +437,22 @@ class TextBox(InterfaceElement):
     ALIGN_RIGHT = 2
 
     def __init__(self, name='textbox', text='', color=(0, 0, 0), x=0, y=0, alignment=0, font_name='arial', size=32, bold=False, italic=False, background=None, clickable=False):
+        """
+        Constructor of a TextBox object
+
+        :param name: Identifier for event listening
+        :param text: Text to be displayed at the text box
+        :param color: Tuple containing the color of the text
+        :param x: x coordinate of the anchor of the object
+        :param y: y coordinate of the anchor of the object
+        :param aligment: Aligment of the text box based on the anchor
+        :param font_name: Name of the font to be displayed
+        :param size: Size of the font to be displayed
+        :param bold: Displays text in bold
+        :param italic: Displays text in italic
+        :param background: Tuple containing the color of the background or None
+        :param clickable: Set clickable attribute for event listening
+        """
         super().__init__(name, x, y)
         self._font = pygame.font.SysFont(font_name, size, bold, italic)
         self._text = text
@@ -352,64 +464,83 @@ class TextBox(InterfaceElement):
 
     @property
     def font(self) -> pygame.font.Font:
+        """Getter of the font attribute"""
         return self._font
 
     @font.setter
     def font(self, new_font: pygame.font.Font):
+        """Setter of the font attribute"""
         if self._font != new_font:
             self._font = new_font
             self._render = self.render(self.text, 1, self.color, self.background)
 
     @property
     def text(self) -> str:
+        """Getter of the text attribute"""
         return self._text
 
     @text.setter
     def text(self, new_text: str):
+        """Setter of the text attribute"""
         if self._text != new_text:
             self._text = new_text
             self._render = self.render(new_text, 1, self.color, self.background)
 
     @property
     def color(self) -> tuple:
+        """Getter of the color attribute"""
         return self._color
 
     @color.setter
     def color(self, new_color: tuple):
+        """Setter of the color attribute"""
         if self._color != new_color:
             self._color = new_color
             self._render = self.render(self.text, 1, new_color, self.background)
 
     @property
     def background(self) -> tuple:
+        """Getter of the background attribute"""
         return self._background
 
     @background.setter
     def background(self, new_color: tuple):
+        """Setter of the background attribute"""
         if self._background is None or self._background != new_color:
             self._background = new_color
             self._render = self.render(self.text, 1, self.color, self.background)
 
     @property
     def width(self):
+        """Getter of the width attribute"""
         return self._render.get_width()
 
     @property
     def height(self):
+        """Getter of the height attribute"""
         return self._render.get_height()
 
     @property
     def clickable(self) -> bool:
+        """Getter of the clickable attribute"""
         return self._clickable
 
     @clickable.setter
     def clickable(self, can_click: bool):
+        """Setter of the clickable attribute"""
         self._clickable = can_click
 
     def render(self, text, antialiasing, color, background=None) -> pygame.Surface:
+        """Wrapper of the render method in font"""
         return self._font.render(text, antialiasing, color, background)
 
     def hover(self, mouse_pos: tuple) -> bool:
+        """
+        Check if mouse is hovering this object
+
+        :param tuple mouse_pos: Position of the mouse
+        """
+
         # Check if mouse position collides with Y-coordinates of textbox
         collision_y = mouse_pos[1] >= self.y-(self.height//2) and mouse_pos[1] <= (self.y+self.height//2)
 
@@ -424,6 +555,12 @@ class TextBox(InterfaceElement):
         return collision_x and collision_y
 
     def display(self, window):
+        """
+        Display text box on a window surface
+
+        :param window: Window surface to display the textbox
+        """
+
         # Display text according to the aligmnent of the text
         if self._alignment == self.ALIGN_CENTER:
             window.blit(self._render, (self.x-(self.width//2), self.y-(self.height//2)))
@@ -438,20 +575,39 @@ class InteractiveTextBox(TextBox):
     active_textbox = None
 
     def __init__(self, name='interactivetextbox', text='', color=(0, 0, 0), x=0, y=0, alignment=0, font_name='arial', size=32, bold=False, italic=False, background=None, clickable=False, char_limit=None):
+        """
+        Constructor of a TextBox object
+
+        :param name: Identifier for event listening
+        :param text: Text to be displayed at the text box
+        :param color: Tuple containing the color of the text
+        :param x: x coordinate of the anchor of the object
+        :param y: y coordinate of the anchor of the object
+        :param aligment: Aligment of the text box based on the anchor
+        :param font_name: Name of the font to be displayed
+        :param size: Size of the font to be displayed
+        :param bold: Displays text in bold
+        :param italic: Displays text in italic
+        :param background: Tuple containing the color of the background or None
+        :param clickable: Set clickable attribute for event listening
+        """
         super().__init__(name, text, color, x, y, alignment, font_name, size, bold, italic, background, clickable)
         self._limit = char_limit
 
     @property
     def active(self):
+        """Getter of the active attribute"""
         return self == InteractiveTextBox.active_textbox
 
     def activate(self):
+        """Activate this text box"""
         if self != InteractiveTextBox.active_textbox:
             InteractiveTextBox.active_textbox = self
             self._render = self.render(self.text, 1, self.color, self.background)
 
     @classmethod
     def deactivate_all(cls):
+        """Deactivate all text boxes"""
         if cls.active_textbox is not None:
             last_textbox = cls.active_textbox
             cls.active_textbox = None
@@ -459,9 +615,11 @@ class InteractiveTextBox(TextBox):
 
     @property
     def width(self) -> int:
+        """Getter of the width attribute"""
         return self._render.get_width()
 
     def render(self, text, antialiasing, color, background=None) -> pygame.Surface:
+        """Wrapper of the render method in font"""
         if self.active and len(self.text) < self._limit:
             new_text = text + self.IDLE_CHAR
         else:
@@ -476,15 +634,22 @@ class InteractiveTextBox(TextBox):
         return self._font.render(new_text, antialiasing, color, background)
 
     def delete_char(self):
+        """Delete last character written in the text box if possible"""
         if self.active and len(self.text) > 0:
             self._text = self.text[:-1]
             self._render = self.render(self.text, 1, self.color, self.background)
 
     def write_char(self, new_char: str):
+        """Write character in the text box if possible"""
         if self.active and len(self.text) < self._limit:
             self._text = self.text + new_char
             self._render = self.render(self.text, 1, self.color, self.background)
 
     def float(self) -> float:
+        """
+        Return the content of the text box as float
+        :return:
+        Float: Content of the text box
+        """
         newtext = self.text if self.text != '' and self.text[-1] != ',' and self.text[-1] != '-' else self.text + '0'
         return float(newtext.replace(',', '.'))
