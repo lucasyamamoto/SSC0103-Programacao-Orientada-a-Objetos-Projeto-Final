@@ -6,6 +6,13 @@ class Level:
     SCALE = 100
 
     def __init__(self, objects: list):
+        """
+        Constructor of a Level object. Object list must have a ball and a goal and they must not be on the same x coordinate
+
+        :param list objects: List of level objects of type GameObject
+        :raise TypeError: List contain something other than a GameObject
+        :raise ValueError: Missing ball, goal or they are in the same x coordinate
+        """
         if(not all(isinstance(obj, GameObject) for obj in objects)):
             raise TypeError("Game object list must be composed of game objects")
 
@@ -30,36 +37,49 @@ class Level:
 
     @property
     def objects(self) -> list:
+        """Getter of the objects attribute"""
         return self._objects
 
     def get_ball_pos(self) -> tuple:
+        """Get ball coordinates"""
         return (self._objects[self._ball_index].x, self._objects[self._ball_index].y)
 
     def set_ball_pos(self, new_pos: tuple):
+        """Set ball coordinates"""
         self._objects[self._ball_index].x, self._objects[self._ball_index].y = new_pos
 
     def get_goal_pos(self) -> tuple:
+        """Get goal coordinates"""
         return (self._objects[self._goal_index].x, self._objects[self._goal_index].y)
 
     def get_base_pos(self) -> tuple:
+        """Get origin relative to the Level xy plane"""
         return (self._objects[self._ball_index].x, self._middle_line_y)
 
     def get_relative_pos(self, other) -> tuple:
+        """Get position of an object relative to the Level xy plane"""
         return (other[0] - self._middle_line_x, self._middle_line_y - other[1])
 
     def check_goal_collision(self) -> bool:
+        """Check if ball collided with the goal object"""
         goal_x, goal_y = self.get_goal_pos()
         return self._objects[self._ball_index].collision(CircularObject(x=goal_x, y=goal_y))
 
     def check_wall_collision(self) -> bool:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
+        """Check if ball collided with a wall object"""
         for obj in self._objects:
             if isinstance(obj, RectangularObject) and self._objects[self._ball_index].collision(obj):
                 return True
         return False
 
-
     def move_ball(self, equation: tuple, move_right: bool):
+        """
+        Move the ball object one pixel in the X-axis and n pixels in the Y-axis according to an equation
+
+        :param tuple equation: Tuple of the three coeficients of an quadratic function
+        :param bool move_right: True if it should move to the right and False if it should move to the left
+        """
+
         # Get positions relative to the level coordinates
         relative_ball_pos = self.get_relative_pos(self.get_ball_pos())
         relative_goal_pos = self.get_relative_pos(self.get_goal_pos())
@@ -96,24 +116,60 @@ class Level:
 
 class LevelManager:
     def __init__(self, level_list = []):
+        """
+        Constructor of the LevelManager object
+
+        :param level_list: list of available levels
+        """
         self._list = level_list
         self._size = len(level_list)
 
     @property
     def size(self):
+        """Getter of the size attribute"""
         return self._size
 
     def get_level(self, index: int) -> Level:
+        """
+        Get level of a specified index
+
+        :param int index: Index of the level
+        :return:
+        Level: Level at the index
+        :raise ValueError: Invalid index
+        """
         if self.size <= abs(index):
             raise ValueError("Index out of bounds")
         return self._list[index]
     
     def set_level(self, level: Level, index: int):
+        """
+        Set level of a specified index
+
+        :param Level level: Level object to replace another
+        :param int index: Index of the level
+        :return:
+        Level: Level at the index
+        :raise ValueError: Invalid index
+        """
         if index >= abs(index):
             raise ValueError("Index out of bounds")
         self._list[index] = level
     
     def load(self, file_name: str, index=None):
+        """
+        Read a level from a file. Index can be specified to replace an existing level in the list.
+        File lines format:
+            [Object],[param1],[param2],...,[image_file]
+            Goal,x,y,radius,image_file
+            Ball,x,y,radius,image_file
+            Wall,x,y,width,height,image_file
+
+        :param str file_name: Name of the file
+        :param index: Optional. Replaces level with the index specified in the list. Int or None
+        :raise FileNotFoundError: File doesn't exist
+        :raise IOError: File doesn't follow the format required
+        """
         level_obj = []
         # Read object from file
         with open(file_name, 'r') as f:
@@ -148,8 +204,13 @@ class LevelManager:
             raise ValueError("Invalid index")
 
     def display(self, window, index: int):
-        if index is not int:
-            raise TypeError("Index must be int")
+        """
+        Display level at specified index
+
+        :param window: Window surface to display the level
+        :param int index: Index of the level
+        :raise ValueError: Invalid index
+        """
         if index >= abs(index):
             raise ValueError("Index out of bounds")
         self._list[index].display(window)

@@ -12,6 +12,12 @@ class Equation:
 	FRAMERATE = 60
 
 	def __init__(self, window):
+		"""
+		Inicialize game class while loading levels and menus
+		
+		:param window: Superfície da janela
+		"""
+
 		# Main loop variables
 		self._window = window
 		self._clock = pygame.time.Clock()
@@ -32,28 +38,43 @@ class Equation:
 		pygame.display.set_caption("Equation")
 
 	def open_main_menu(self):
+		"""Load main menu. Doesn't reset level configurations"""
 		self._extra_menus = []
 		self._interface = MainMenu()
 
 	def open_level_selection(self):
+		"""Load level selection menu. Doesn't reset level configurations"""
 		self._extra_menus = []
 		self._interface = LevelSelection(self._level_manager.size)
 
 	def set_current_level(self, index: int):
+		"""
+		Start level. Doesn't reset level configurations
+
+		:param int index: Index of the level
+		"""
 		self._current_level = self._level_manager.get_level(index)
 		self._current_level_index = index
 		self._interface = GameInterface(self._current_level)
 
 	def get_current_level(self):
+		"""
+		Returns currently running level
+
+		:return:
+		Level: Current level
+		"""
 		return self._current_level
 
 	def restart_current_level(self):
+		"""Restart current level resetting level configurations"""
 		if self._current_level_index != None:
 			self._level_manager.load(f'level{self._current_level_index}', self._current_level_index)
 			self.set_current_level(self._current_level_index)
 			self._interface = GameInterface(self._current_level)
 
 	def exit_current_level(self):
+		"""Exit current level to level selection menu while resetting level configurations"""
 		self._level_manager.load(f'level{self._current_level_index}', self._current_level_index)
 		self._current_level = None
 		self._current_level_index = None
@@ -61,16 +82,25 @@ class Equation:
 		self.open_level_selection()
 
 	def open_new_menu(self, interface: InterfaceManager):
+		"""
+		Open a new extra menu on top of the current one
+
+		:param InterfaceManager interface: New menu
+		"""
 		self._extra_menus.append(interface)
 
 	def quit_menu(self):
+		"""Quit extra menu on top of the main interface"""
 		if len(self._extra_menus) > 0:
 			self._extra_menus.pop()
 
 	def quit(self):
+		"""Quit game"""
 		self._running = False
 
 	def listen(self):
+		"""Listen for events and update game state"""
+
 		# Check for events
 		for event in pygame.event.get():
 			# If window is being closed
@@ -131,6 +161,8 @@ class Equation:
 				self.open_new_menu(LevelCompletedInterface())
 
 	def display(self):
+		"""Display all current elements in game"""
+
 		# Update display
 		self._window.fill(self.WHITE)
 		if self._current_level is not None:
@@ -142,6 +174,8 @@ class Equation:
 		pygame.display.update()
 
 	def main(self):
+		"""Start game loop"""
+
 		# Main loop
 		while self._running:
 			# Syncronize framerate
@@ -152,6 +186,8 @@ class Equation:
 			self.listen()
 
 if __name__ == '__main__':
+	"""Allow game to run from this file"""
+
 	# Window variables
 	width, height = 800, 600
 	window = pygame.display.set_mode((width, height))
