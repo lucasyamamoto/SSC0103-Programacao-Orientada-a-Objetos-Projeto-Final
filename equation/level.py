@@ -57,8 +57,16 @@ class Level:
         return (other[0] - self._middle_line_x, self._middle_line_y - other[1])
 
     def check_goal_collision(self) -> bool:
-        goal_x,goal_y = self.get_goal_pos()
+        goal_x, goal_y = self.get_goal_pos()
         return self._objects[self._ball_index].collision(CircularObject(x=goal_x, y=goal_y))
+
+    def check_wall_collision(self) -> bool:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        for obj in self._objects:
+            if isinstance(obj, RectangularObject) and self._objects[self._ball_index].collision(obj):
+                return True
+        return False
+
 
     def move_ball(self, equation: tuple, move_right: bool):
         # Get positions relative to the level coordinates

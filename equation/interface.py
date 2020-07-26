@@ -101,13 +101,18 @@ class GameInterface(InterfaceManager):
         # Create goal tracker
         goal_pos = level.get_goal_pos()
         goal_pos = level.get_relative_pos(goal_pos)
-        goal_tracker = TextBox('goaltracker', f'Objetivo: x = {mouse_pos[0]}, y = {mouse_pos[1]}', self.FONTCOLOR, 2, height-round(1.5 * mouse_tracker.height), TextBox.ALIGN_LEFT, size=20)
+        goal_tracker = TextBox('goaltracker', f'Objetivo: x = {goal_pos[0]}, y = {goal_pos[1]}', self.FONTCOLOR, 2, height-round(1.5 * mouse_tracker.height), TextBox.ALIGN_LEFT, size=20)
         
         # Create ball tracker
         ball_pos = level.get_ball_pos()
         ball_pos = level.get_relative_pos(ball_pos)
         ball_tracker = TextBox('balltracker', f'Bola: x = {ball_pos[0]}, y = {ball_pos[1]}', self.FONTCOLOR, 2, height-round(2.5 * mouse_tracker.height), TextBox.ALIGN_LEFT, size=20)
         
+        # Create interface background
+        interface_surface = pygame.Surface((width, round(3.5 * mouse_tracker.height)))
+        interface_surface.fill((255, 255, 255))
+        interface_background = InterfaceElement('background', 0, height-round(3.5 * mouse_tracker.height), interface_surface)
+
         # Create equation format
         equation_c_text = f' + {ball_pos[1]}' if ball_pos[1] >= 0 else f' - {abs(ball_pos[1])}'
         equation_text = TextBox('equationtext', ''.join(['f(x) = ______x² + ______x', equation_c_text]), self.FONTCOLOR, goal_tracker.width+(width-goal_tracker.width-exit_button.width-width//20-2)//2, height-(height//15), size=30)
@@ -120,7 +125,7 @@ class GameInterface(InterfaceManager):
         input_x_squared = InteractiveTextBox(name='x_squared', x=(equation_text.x-(equation_text.width//2)+offset1), y=height-(height//15), alignment=TextBox.ALIGN_RIGHT, size=30, clicable=True, char_limit=6)
         input_x = InteractiveTextBox(name='x_normal', x=(input_x_squared.x+offset2), y=height-(height//15), alignment=TextBox.ALIGN_RIGHT, size=30, clicable=True, char_limit=6)
 
-        super().__init__([mouse_tracker, exit_button, equation_text, ball_tracker, goal_tracker, input_x_squared, input_x])
+        super().__init__([interface_background, mouse_tracker, exit_button, equation_text, ball_tracker, goal_tracker, input_x_squared, input_x])
 
     @property
     def equation(self) -> tuple:
@@ -146,6 +151,53 @@ class GameInterface(InterfaceManager):
         # Mouse related events
         mouse_pos = pygame.mouse.get_pos()
 
+        # Lock features during attempt
+        if self.attempt:
+            # Deactivate all text boxes
+            InteractiveTextBox.deactivate_all()
+            for elem in self._elements:
+                # Search for clicable text boxes
+                if isinstance(elem, TextBox) and elem.hover(mouse_pos) and elem.clicable:
+                    if elem.text == 'Sair':
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            game.exit_current_level()
+                        else:
+                            # Hover animation
+                            elem.color = (255, 255, 255)
+                            elem.background = self.FONTCOLOR
+                    else:
+                        # Disable hover animation
+                        elem.color = self.FONTCOLOR
+                        elem.background = None
+
+            # Execute attempt
+            if game._interface.move_right is None:
+                game._interface.move_right = game._current_level.get_ball_pos()[0] < game._current_level.get_goal_pos()[0]
+            
+                # Check for delay, if necessary
+            if game._delay == 0:
+                game._current_level.move_ball(game._interface.equation, game._interface.move_right)
+                game._delay = 0
+            else:
+                game._delay -= 1
+
+            # Check for collisions
+            ball_pos = game._current_level.get_ball_pos()
+            screen_size = pygame.display.get_surface().get_size()
+
+            # If ball goes out of the screen or hit a wall, end the game
+            if ball_pos[0] < 0 or ball_pos[0] > screen_size[0] or ball_pos[1] < 1 or ball_pos[1] > screen_size[1] or game._current_level.check_wall_collision():
+                game._interface.attempt = False
+                print('Fim de jogo')
+                game.restart_current_level()
+            # if ball reaches goal, end the game
+            elif game._current_level.check_goal_collision():
+                game._current_level.is_completed = True
+                print('Parabéns')
+                game.restart_current_level()
+            return
+
+        # Listen as usual
         for elem in self._elements:
             if isinstance(elem, TextBox):
                 # Hover animations

@@ -3,7 +3,7 @@ import math
 import pygame
 
 class GameObject(ABC):
-    def __init__(self, name='Game Object', x=0, y=0, height=0, width=0, image=None):
+    def __init__(self, name='Game Object', x=0, y=0, width=0, height=0, image=None):
         if height < 0 or width < 0:
             raise ValueError("Dimension values must not be negative")
         self._name = name
@@ -14,7 +14,6 @@ class GameObject(ABC):
         # Scale image if it doesn't match object's size
         if image is not None and (image.get_width() != width or image.get_height() != height):
             image = pygame.transform.smoothscale(image, (width, height))
-            print((image.get_width(), width, height))
         self._image = image
 
     @property
@@ -67,7 +66,7 @@ class GameObject(ABC):
 
 class CircularObject(GameObject):
     def __init__(self, name='Circle', x=0, y=0, radius=0, image=None):
-        super().__init__(name, x, y, radius, radius, image)
+        super().__init__(name, x, y, radius*2, radius*2, image)
         self._radius = radius
 
     def max_radius(self) -> float:
@@ -80,20 +79,20 @@ class CircularObject(GameObject):
         else:
             distance_x = abs(self.x - obj.x)
             distance_y = abs(self.y - obj.y)
-            retangular_colision = distance_x < (self.width + obj.width) and distance_y < (self.height + obj.height)
+            retangular_colision = distance_x < (self.width + obj.width)/2 and distance_y < (self.height + obj.height)/2
             return circular_colision and retangular_colision
 
 class RectangularObject(GameObject):
-    def __init__(self, name='Rectangle', x=0, y=0, height=0, width=0, image=None):
-        super().__init__(name, x, y, height, width, image)
+    def __init__(self, name='Rectangle', x=0, y=0, width=0, height=0, image=None):
+        super().__init__(name, x, y, width, height, image)
 
     def max_radius(self) -> float:
-        return math.sqrt(self.width ** 2 + self.height ** 2)
+        return math.sqrt((self.width/2) ** 2 + (self.height/2) ** 2)
 
     def collision(self, obj: GameObject) -> bool:
         distance_x = abs(self.x - obj.x)
         distance_y = abs(self.y - obj.y)
-        retangular_colision = distance_x < (self.width + obj.width) and distance_y < (self.height + obj.height)
+        retangular_colision = distance_x < (self.width + obj.width)/2 and distance_y < (self.height + obj.height)/2
         if isinstance(obj, RectangularObject):
             return retangular_colision
         else:
