@@ -9,7 +9,7 @@ LEFT = 3
 
 class Snake:
     """
-    This class is responsible for the cration and update of the Snake Object
+    This class is responsible for the creation and update of the Snake Object
     """
     def __init__(self, skin, SCREEN_SIZE):
         self.SCREEN_SIZE = SCREEN_SIZE
@@ -20,7 +20,7 @@ class Snake:
         self.counter = 0
     def listen(self, event):
         """
-        This method recives a key from a event, then move the snake
+        This method receives a key from a event, then move the snake
         :param event:
         :return:
         list : Snake new position
@@ -55,7 +55,7 @@ class Snake:
 
     def collision(self, tup): # Test collision with the head of snake
         """
-            This method verify if a collision have ocurred
+            This method verify if a collision have occurred
             :param c1: Snake's head
             :param c2: Apple position
             :return:
@@ -65,7 +65,7 @@ class Snake:
 
     def auto_collision(self):
         """
-        This method verify the auto colision of the snake
+        This method verify the auto collision of the snake
         :return:
         Boolean: Auto collision
         """
@@ -92,7 +92,7 @@ class Snake:
 
     def update(self):
         """
-        This method update the actual state of the snake, and verify if its have a collision
+        This method update the actual state of the snake, and verify if it has a collision
         :return:
         """
         if self.auto_collision():

@@ -105,8 +105,8 @@ class Equation:
 		for event in pygame.event.get():
 			# If window is being closed
 			if event.type == pygame.QUIT:
-				self._running = False
-				return
+				pygame.quit()
+				exit()
 			# Listen for interface events
 			if len(self._extra_menus) == 0:
 				self._interface.listen(self, event)
