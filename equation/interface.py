@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from level import Level
 
 class InterfaceManager(ABC):
+    """Generic interface"""
     KEYMAXTICK = 60
 
     def __init__(self, elements = []):
@@ -41,6 +42,7 @@ class InterfaceManager(ABC):
         ...
 
 class MainMenu(InterfaceManager):
+    """Main menu interface"""
     FONTCOLOR = (0, 0, 0)
     def __init__(self):
         """Constructor of the main menu"""
@@ -80,6 +82,7 @@ class MainMenu(InterfaceManager):
                     elem.background = (255, 255, 255)
 
 class LevelSelection(InterfaceManager):
+    """Level selection screen interface"""
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self, num_levels: int):
@@ -130,6 +133,7 @@ class LevelSelection(InterfaceManager):
                     elem.background = (255, 255, 255)
 
 class GameInterface(InterfaceManager):
+    """Game level interface"""
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self, level: Level):
@@ -266,6 +270,7 @@ class GameInterface(InterfaceManager):
                 self._attempt = True
 
 class LevelCompletedInterface(InterfaceManager):
+    """Congratulation message interface at the conclusion of a level"""
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self):
@@ -310,6 +315,7 @@ class LevelCompletedInterface(InterfaceManager):
                     elem.background = None
 
 class PopUp(InterfaceManager):
+    """Generic pop-up interface"""
     FONTCOLOR = (0, 0, 0)
 
     def __init__(self, messages: list):
@@ -361,6 +367,7 @@ class PopUp(InterfaceManager):
                     elem.background = None
 
 class InterfaceElement:
+    """Generic interface element"""
     def __init__(self, name='interfaceelement', x=0, y=0, image=None):
         """
         Constructor of the InterfaceElement object
@@ -432,6 +439,7 @@ class InterfaceElement:
             window.blit(self._image, (self._x, self._y))
 
 class TextBox(InterfaceElement):
+    """Normal text box element"""
     ALIGN_CENTER = 0
     ALIGN_LEFT = 1
     ALIGN_RIGHT = 2
@@ -570,6 +578,7 @@ class TextBox(InterfaceElement):
             window.blit(self._render, (self.x-self.width, self.y-(self.height//2)))
 
 class InteractiveTextBox(TextBox):
+    """Text box writable by the player"""
     IDLE_CHAR = '|'
     BLANK_CHAR = '_'
     active_textbox = None

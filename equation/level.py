@@ -2,6 +2,7 @@ import pygame
 from element import GameObject, CircularObject, RectangularObject
 
 class Level:
+    """Level which administrates the game objects inside it"""
     LINE_COLOR = (0, 0, 0)
     SCALE = 100
 
@@ -115,6 +116,7 @@ class Level:
         pygame.draw.line(window, self.LINE_COLOR, (0, self._middle_line_y), (window.get_width(), self._middle_line_y), 3)
 
 class LevelManager:
+    """Holds and administrates all the levels"""
     def __init__(self, level_list = []):
         """
         Constructor of the LevelManager object

@@ -3,6 +3,7 @@ import math
 import pygame
 
 class GameObject(ABC):
+    """Generic game objects of a level"""
     def __init__(self, name='Game Object', x=0, y=0, width=0, height=0, image=None):
         """
         Constructor of GameObject
@@ -107,6 +108,7 @@ class GameObject(ABC):
 
 
 class CircularObject(GameObject):
+    """Circular objects of a level"""
     def __init__(self, name='Circle', x=0, y=0, radius=0, image=None):
         """
         Constructor of CircularObject
@@ -142,6 +144,7 @@ class CircularObject(GameObject):
             return circular_colision and retangular_colision
 
 class RectangularObject(GameObject):
+    """Rectangular objects of a level"""
     def __init__(self, name='Rectangle', x=0, y=0, width=0, height=0, image=None):
         """
         Constructor of RectangularObject

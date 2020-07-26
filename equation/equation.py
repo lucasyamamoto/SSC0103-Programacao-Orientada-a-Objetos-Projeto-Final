@@ -5,6 +5,8 @@ from level import LevelManager, Level
 from interface import InterfaceManager, MainMenu, LevelSelection, GameInterface, LevelCompletedInterface, PopUp, InterfaceElement, TextBox, InteractiveTextBox
 
 class Equation:
+	"""Main game class"""
+
 	# Colors
 	BLACK = (0, 0, 0)
 	WHITE = (255, 255, 255)
