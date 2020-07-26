@@ -1,0 +1,5 @@
+Goal,600,100,100,goal.png
+Wall,300,300,200,200,wall.png
+Wall,100,100,100,100,wall.png
+Wall,400,100,100,100,wall.png
+Ball,100,400,50,ball.png

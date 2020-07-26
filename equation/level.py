@@ -5,12 +5,11 @@ class Level:
     LINE_COLOR = (0, 0, 0)
     SCALE = 100
 
-    def __init__(self, objects: list, completed=False):
+    def __init__(self, objects: list):
         if(not all(isinstance(obj, GameObject) for obj in objects)):
             raise TypeError("Game object list must be composed of game objects")
 
         self._objects = objects
-        self._completed = completed
 
         # Search for ball and goal indexes
         self._ball_index = None
@@ -32,14 +31,6 @@ class Level:
     @property
     def objects(self) -> list:
         return self._objects
-    
-    @property
-    def is_completed(self) -> bool:
-        return self._completed
-
-    @is_completed.setter
-    def is_completed(self, completed: bool):
-        self._completed = completed
 
     def get_ball_pos(self) -> tuple:
         return (self._objects[self._ball_index].x, self._objects[self._ball_index].y)
@@ -81,7 +72,7 @@ class Level:
             new_x = relative_ball_pos[0] - 1
 
         # Move vertically
-        new_y = ((equation[0] * ((new_x/self.SCALE) ** 2)) + (equation[1] * (new_x/self.SCALE)) + equation[2]) * self.SCALE
+        new_y = ((equation[0] * ((new_x/self.SCALE) ** 2)) + (equation[1] * (new_x/self.SCALE)) + equation[2]/self.SCALE) * self.SCALE
         self.set_ball_pos((self.get_ball_pos()[0] + (new_x - relative_ball_pos[0]), self.get_ball_pos()[1] - (new_y - relative_ball_pos[1])))
 
     def display(self, window):
@@ -155,10 +146,6 @@ class LevelManager:
             self._list[index] = Level(level_obj)
         else:
             raise ValueError("Invalid index")
-
-    def save(self, file_name: str):
-        with open(file_name, 'w') as f:
-            ...
 
     def display(self, window, index: int):
         if index is not int:

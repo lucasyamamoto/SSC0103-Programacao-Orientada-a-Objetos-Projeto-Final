@@ -10,6 +10,10 @@ class InterfaceManager(ABC):
             raise TypeError("Element list must be composed of interface elements")
         self._elements = elements
 
+    @property
+    def elements(self) -> list:
+        return self._elements
+
     def display(self, window):
         for elem in self._elements:
             elem.display(window)
@@ -22,9 +26,14 @@ class MainMenu(InterfaceManager):
     FONTCOLOR = (0, 0, 0)
     def __init__(self):
         width, height = pygame.display.get_surface().get_size()
-        start_button = TextBox('start', 'Iniciar', self.FONTCOLOR, width//2, height//2, TextBox.ALIGN_CENTER, 'arial', 32, clicable=True)
-        exit_button = TextBox('exit', 'Sair', self.FONTCOLOR, width//2, (height//2)+start_button.height, TextBox.ALIGN_CENTER, 'arial', 32, clicable=True)
-        super().__init__([start_button, exit_button])
+
+        # Cria o título do menu
+        title = TextBox('title', 'Equation', self.FONTCOLOR, width//2, height//6, size=90)
+
+        # Cria os botões do menu
+        start_button = TextBox('start', 'Iniciar', self.FONTCOLOR, width//2, height//2, TextBox.ALIGN_CENTER, 'arial', 32, clickable=True)
+        exit_button = TextBox('exit', 'Sair', self.FONTCOLOR, width//2, (height//2)+start_button.height, TextBox.ALIGN_CENTER, 'arial', 32, clickable=True)
+        super().__init__([title, start_button, exit_button])
 
     def listen(self, game, event):
         mouse_pos = pygame.mouse.get_pos()
@@ -32,7 +41,7 @@ class MainMenu(InterfaceManager):
         for elem in self._elements:
             if isinstance(elem, TextBox):
                 # Hover animations
-                if elem.hover(mouse_pos) and elem.clicable:
+                if elem.hover(mouse_pos) and elem.clickable:
                     elem.color = (255, 255, 255)
                     elem.background = self.FONTCOLOR
                     # Menu interactions
@@ -50,14 +59,20 @@ class LevelSelection(InterfaceManager):
 
     def __init__(self, num_levels: int):
         width, height = pygame.display.get_surface().get_size()
+        
+        # Cria o título do menu
+        title = TextBox('title', 'Seleção de nível', self.FONTCOLOR, width//2, height//5, size=60)
+
+        # Cria o botão dos níveis
         if num_levels > 0:
-            level_buttons = [TextBox('level0', 'Tutorial', self.FONTCOLOR, width//2, (height//2), clicable=True)]
-            for i in range(1, num_levels-1):
-                level_buttons.append(TextBox(f'level{i}', f'Nível {i}', self.FONTCOLOR, width//2, (height//2)+(level_buttons[0].height*i), clicable=True))
-            level_buttons.append(TextBox(f'level{num_levels}', 'Voltar ao menu principal', self.FONTCOLOR, width//2, (height//2)+(level_buttons[0].height*num_levels), clicable=True))
+            level_buttons = [TextBox('level0', 'Nível 0', self.FONTCOLOR, width//2, (height//3), clickable=True)]
+            for i in range(1, num_levels):
+                level_buttons.append(TextBox(f'level{i}', f'Nível {i}', self.FONTCOLOR, width//2, (height//3)+(level_buttons[0].height*i), clickable=True))
+            level_buttons.append(TextBox(f'level{num_levels}', 'Voltar ao menu principal', self.FONTCOLOR, width//2, (height//3)+(level_buttons[0].height*num_levels), clickable=True))
         else:
-            level_buttons = [TextBox('back', 'Voltar ao menu principal', self.FONTCOLOR, width//2, (height//2), clicable=True)]
-        super().__init__(level_buttons)
+            level_buttons = [TextBox('back', 'Voltar ao menu principal', self.FONTCOLOR, width//2, (height//3), clickable=True)]
+        
+        super().__init__(level_buttons + [title])
 
     def listen(self, game, event):
         mouse_pos = pygame.mouse.get_pos()
@@ -65,7 +80,7 @@ class LevelSelection(InterfaceManager):
         for elem in self._elements:
             if isinstance(elem, TextBox):
                 # Hover animations
-                if elem.hover(mouse_pos) and elem.clicable:
+                if elem.hover(mouse_pos) and elem.clickable:
                     elem.color = (255, 255, 255)
                     elem.background = self.FONTCOLOR
                     # Menu interactions
@@ -74,8 +89,6 @@ class LevelSelection(InterfaceManager):
                             game.set_current_level(int(elem.text[6:]))
                         elif elem.text == 'Voltar ao menu principal':
                             game.open_main_menu()
-                        elif elem.text == 'Tutorial':
-                            game.set_current_level(0)
                 else:
                     elem.color = self.FONTCOLOR
                     elem.background = (255, 255, 255)
@@ -90,7 +103,10 @@ class GameInterface(InterfaceManager):
 
         # Create exit button
         width, height = pygame.display.get_surface().get_size()
-        exit_button = TextBox('sair', 'Sair', self.FONTCOLOR, width-(width//20), height-(height//20), clicable=True)
+        exit_button = TextBox('sair', 'Sair', self.FONTCOLOR, width-(width//20), height-(height//20), clickable=True)
+
+        # Create help button
+        help_button = TextBox('help', 'Ajuda', self.FONTCOLOR, width-(width//20), height//20, clickable=True)
 
         # Create mouse tracker
         mouse_pos = pygame.mouse.get_pos()
@@ -122,10 +138,10 @@ class GameInterface(InterfaceManager):
         offset1 = TextBox('', 'f(x) = ______', size=30).width
         offset2 = TextBox('', 'x² + ______', size=30).width
 
-        input_x_squared = InteractiveTextBox(name='x_squared', x=(equation_text.x-(equation_text.width//2)+offset1), y=height-(height//15), alignment=TextBox.ALIGN_RIGHT, size=30, clicable=True, char_limit=6)
-        input_x = InteractiveTextBox(name='x_normal', x=(input_x_squared.x+offset2), y=height-(height//15), alignment=TextBox.ALIGN_RIGHT, size=30, clicable=True, char_limit=6)
+        input_x_squared = InteractiveTextBox(name='x_squared', x=(equation_text.x-(equation_text.width//2)+offset1), y=height-(height//15), alignment=TextBox.ALIGN_RIGHT, size=30, clickable=True, char_limit=6)
+        input_x = InteractiveTextBox(name='x_normal', x=(input_x_squared.x+offset2), y=height-(height//15), alignment=TextBox.ALIGN_RIGHT, size=30, clickable=True, char_limit=6)
 
-        super().__init__([interface_background, mouse_tracker, exit_button, equation_text, ball_tracker, goal_tracker, input_x_squared, input_x])
+        super().__init__([interface_background, mouse_tracker, help_button, exit_button, equation_text, ball_tracker, goal_tracker, input_x_squared, input_x])
 
     @property
     def equation(self) -> tuple:
@@ -151,64 +167,20 @@ class GameInterface(InterfaceManager):
         # Mouse related events
         mouse_pos = pygame.mouse.get_pos()
 
-        # Lock features during attempt
-        if self.attempt:
-            # Deactivate all text boxes
-            InteractiveTextBox.deactivate_all()
-            for elem in self._elements:
-                # Search for clicable text boxes
-                if isinstance(elem, TextBox) and elem.hover(mouse_pos) and elem.clicable:
-                    if elem.text == 'Sair':
-                        if event.type == pygame.MOUSEBUTTONDOWN:
-                            game.exit_current_level()
-                        else:
-                            # Hover animation
-                            elem.color = (255, 255, 255)
-                            elem.background = self.FONTCOLOR
-                    else:
-                        # Disable hover animation
-                        elem.color = self.FONTCOLOR
-                        elem.background = None
-
-            # Execute attempt
-            if game._interface.move_right is None:
-                game._interface.move_right = game._current_level.get_ball_pos()[0] < game._current_level.get_goal_pos()[0]
-            
-                # Check for delay, if necessary
-            if game._delay == 0:
-                game._current_level.move_ball(game._interface.equation, game._interface.move_right)
-                game._delay = 0
-            else:
-                game._delay -= 1
-
-            # Check for collisions
-            ball_pos = game._current_level.get_ball_pos()
-            screen_size = pygame.display.get_surface().get_size()
-
-            # If ball goes out of the screen or hit a wall, end the game
-            if ball_pos[0] < 0 or ball_pos[0] > screen_size[0] or ball_pos[1] < 1 or ball_pos[1] > screen_size[1] or game._current_level.check_wall_collision():
-                game._interface.attempt = False
-                print('Fim de jogo')
-                game.restart_current_level()
-            # if ball reaches goal, end the game
-            elif game._current_level.check_goal_collision():
-                game._current_level.is_completed = True
-                print('Parabéns')
-                game.restart_current_level()
-            return
-
         # Listen as usual
         for elem in self._elements:
             if isinstance(elem, TextBox):
                 # Hover animations
-                if elem.hover(mouse_pos) and elem.clicable:
+                if elem.hover(mouse_pos) and elem.clickable:
                     # Hovering
                     elem.color = (255, 255, 255)
                     elem.background = self.FONTCOLOR
                     # Menu interactions
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        if elem.text == 'Sair':
+                        if elem.name == 'sair':
                             game.exit_current_level()
+                        elif elem.name == 'help':
+                            game.open_new_menu(PopUp(['Leve a bola até o objetivo sem acertar os obstáculos.', 'Clique nas lacunas da equação para inserir a equação', 'de movimento da bola. Pressione Enter para lançar a bola.']))
                         elif isinstance(elem, InteractiveTextBox):
                             elem.activate()
                         else:
@@ -240,6 +212,83 @@ class GameInterface(InterfaceManager):
                     InteractiveTextBox.active_textbox.delete_char()
             if event.key == pygame.K_KP_ENTER or event.key == pygame.K_RETURN:
                 self._attempt = True
+
+class LevelCompletedInterface(InterfaceManager):
+    FONTCOLOR = (0, 0, 0)
+
+    def __init__(self):
+        # Create victory message
+        width, height = pygame.display.get_surface().get_size()
+        congratulation_text = TextBox('congratulationtext', 'Nível concluído!', self.FONTCOLOR, width//2, height//3, size=40)
+        
+        # Create back button
+        back_button = TextBox('back', 'Voltar para a seleção de níveis', self.FONTCOLOR, width//2, height//3+congratulation_text.height+20, size=20, clickable=True)
+        
+        # Create background
+        interface_surface = pygame.Surface((congratulation_text.width+10, congratulation_text.height+back_button.height+50))
+        interface_surface.fill((255, 255, 255))
+        interface_background = InterfaceElement('background', (width-congratulation_text.width-10)//2, (height//3)-(congratulation_text.height//2)-5, interface_surface)
+        
+        super().__init__([interface_background, congratulation_text, back_button])
+        
+    def listen(self, game, event):
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Listen as usual
+        for elem in self._elements:
+            if isinstance(elem, TextBox):
+                # Hover animations
+                if elem.hover(mouse_pos) and elem.clickable:
+                    # Hovering
+                    elem.color = (255, 255, 255)
+                    elem.background = self.FONTCOLOR
+                    # Menu interactions
+                    if event.type == pygame.MOUSEBUTTONDOWN and elem.name == 'back':
+                        game.exit_current_level()
+                else:
+                    # Not hovering
+                    elem.color = self.FONTCOLOR
+                    elem.background = None
+
+class PopUp(InterfaceManager):
+    FONTCOLOR = (0, 0, 0)
+
+    def __init__(self, messages: list):
+        # Create messages
+        width, height = pygame.display.get_surface().get_size()
+        message_text = []
+        message_text.append(TextBox('messagetext', messages[0], self.FONTCOLOR, width//2, height//3, size=20))
+        for i in range(1, len(messages)):
+            message_text.append(TextBox('messagetext', messages[i], self.FONTCOLOR, width//2, (height//3)+(i * message_text[0].height), size=20))
+        
+        # Create back button
+        back_button = TextBox('back', 'OK', self.FONTCOLOR, width//2, height//3+(len(messages)*message_text[0].height)+20, size=20, clickable=True)
+        
+        # Create background
+        interface_surface = pygame.Surface((width, (len(messages)*message_text[0].height)+back_button.height+50))
+        interface_surface.fill((255, 255, 255))
+        interface_background = InterfaceElement('background', 0, (height//3)-(message_text[0].height//2)-5, interface_surface)
+        
+        super().__init__([interface_background, back_button] + message_text)
+
+    def listen(self, game, event):
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Listen as usual
+        for elem in self._elements:
+            if isinstance(elem, TextBox):
+                # Hover animations
+                if elem.hover(mouse_pos) and elem.clickable:
+                    # Hovering
+                    elem.color = (255, 255, 255)
+                    elem.background = self.FONTCOLOR
+                    # Menu interactions
+                    if event.type == pygame.MOUSEBUTTONDOWN and elem.name == 'back':
+                        game.quit_menu()
+                else:
+                    # Not hovering
+                    elem.color = self.FONTCOLOR
+                    elem.background = None
 
 class InterfaceElement:
     def __init__(self, name='interfaceelement', x=0, y=0, image=None):
@@ -283,14 +332,15 @@ class InterfaceElement:
         return mouse_pos[0] >= self.x and mouse_pos[0] <= self.x+self.width and mouse_pos[1] >= self.y and mouse_pos[1] <= self.y+self.height
 
     def display(self, window):
-        window.blit(self._image, (self._x, self._y))
+        if self._image is not None:
+            window.blit(self._image, (self._x, self._y))
 
 class TextBox(InterfaceElement):
     ALIGN_CENTER = 0
     ALIGN_LEFT = 1
     ALIGN_RIGHT = 2
 
-    def __init__(self, name='textbox', text='', color=(0, 0, 0), x=0, y=0, alignment=0, font_name='arial', size=32, bold=False, italic=False, background=None, clicable=False):
+    def __init__(self, name='textbox', text='', color=(0, 0, 0), x=0, y=0, alignment=0, font_name='arial', size=32, bold=False, italic=False, background=None, clickable=False):
         super().__init__(name, x, y)
         self._font = pygame.font.SysFont(font_name, size, bold, italic)
         self._text = text
@@ -298,7 +348,7 @@ class TextBox(InterfaceElement):
         self._background = background
         self._render = self._font.render(text, 1, color, background)
         self._alignment = alignment
-        self._clicable = clicable
+        self._clickable = clickable
 
     @property
     def font(self) -> pygame.font.Font:
@@ -349,12 +399,12 @@ class TextBox(InterfaceElement):
         return self._render.get_height()
 
     @property
-    def clicable(self) -> bool:
-        return self._clicable
+    def clickable(self) -> bool:
+        return self._clickable
 
-    @clicable.setter
-    def clicable(self, can_click: bool):
-        self._clicable = can_click
+    @clickable.setter
+    def clickable(self, can_click: bool):
+        self._clickable = can_click
 
     def render(self, text, antialiasing, color, background=None) -> pygame.Surface:
         return self._font.render(text, antialiasing, color, background)
@@ -387,8 +437,8 @@ class InteractiveTextBox(TextBox):
     BLANK_CHAR = '_'
     active_textbox = None
 
-    def __init__(self, name='interactivetextbox', text='', color=(0, 0, 0), x=0, y=0, alignment=0, font_name='arial', size=32, bold=False, italic=False, background=None, clicable=False, char_limit=None):
-        super().__init__(name, text, color, x, y, alignment, font_name, size, bold, italic, background, clicable)
+    def __init__(self, name='interactivetextbox', text='', color=(0, 0, 0), x=0, y=0, alignment=0, font_name='arial', size=32, bold=False, italic=False, background=None, clickable=False, char_limit=None):
+        super().__init__(name, text, color, x, y, alignment, font_name, size, bold, italic, background, clickable)
         self._limit = char_limit
 
     @property
