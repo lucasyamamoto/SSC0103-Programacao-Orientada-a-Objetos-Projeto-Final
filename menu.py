@@ -6,7 +6,11 @@ FOREGROUND = (0, 0, 0)
 SELECTED = (0, 255, 200)
 
 class MenuItem:
-    def __init__(self, option, image, font, size=(600, 150), pos=(0, 0)) -> None:
+    """A item of menu"""
+
+    def __init__(self, option:str, image:pygame.Surface, font:pygame.font.Font, size:tuple=(600, 150), pos:tuple=(0, 0)) -> None:
+        """Constructor of MenuItem"""
+
         self.option = option
         self.pos = pos
         self.size = size
@@ -17,7 +21,7 @@ class MenuItem:
         self.rect2 =  pygame.Rect((self.pos[0] + 4, self.pos[1] + 4),
                                   (self.size[0] - 8, self.size[1] - 8))
 
-    def collision(self, tup):
+    def collision(self, tup: tuple) -> None:
         """Test collision with a point"""
 
         return (
@@ -25,7 +29,12 @@ class MenuItem:
             self.pos[1] < tup[1] < self.pos[1] + self.size[1]
         )
 
-    def drawn(self, screen, selected=False):
+    def drawn(self, screen:pygame.Surface, selected:bool=False):
+        """
+        Drawn the menu item on screen
+        :param selected: If true, the border will be drawn with other color
+        """
+
         border_color = SELECTED if selected else FOREGROUND
         pygame.draw.rect(screen, border_color, self.rect1)
         pygame.draw.rect(screen, BACKGROUND, self.rect2)
@@ -46,7 +55,11 @@ class MenuItem:
 
 
 class Menu:
-    def __init__(self, screen):
+    """Menu class"""
+
+    def __init__(self, screen:pygame.Surface):
+        """Constructor of Menu"""
+
         self.screen = screen
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font('freesansbold.ttf', 50)
@@ -75,6 +88,8 @@ class Menu:
         
 
     def main(self):
+        """Drawn the menu"""
+
         while True:
             self.clock.tick(40)
             screen.fill(BACKGROUND)
