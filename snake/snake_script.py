@@ -120,7 +120,7 @@ class SnakeGame:
             """
             This is the main looping of the game, resposible for update the screen,snake and apples
             """
-            clock.tick(30 if self.snake.fast else 10)
+            clock.tick(10 if self.snake.fast else 5)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
