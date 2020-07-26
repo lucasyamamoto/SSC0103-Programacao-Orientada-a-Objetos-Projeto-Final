@@ -3,14 +3,16 @@ import random
 from pygame.locals import *
 from snake import Snake
 from apple import Apple
-
+"""
+Created by Igor Lovatto Resende
+N USP 10439099
+"""
 
 BLOCK_SIZE = 20   # Size of blocks
 SCREEN_SIZE = 30  # The width and height of the screen in number of blocks
 FONT_SIZE = 18
 PRIME_NUMBERS = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]
-Counter = 0
-tutorial1 = """Geraldo é uma cobrinha sapeka e que vive faminta. Sua comida favorita é a fruta maça."""
+tutorial1 = """Geraldo é uma cobrinha sapeca e que vive faminta. Sua comida favorita é a fruta maça."""
 tutorial2 = """Porém Geraldo é bem especifico, ele só come maçãs que são de numero primo no pé."""
 tutorial3 = """INSTRUÇÔES"""
 tutorial4 = """Para isso ajude Geraldo a se alimentar capturando apenas as  maçãs com numeros primos"""
@@ -131,7 +133,7 @@ while True:
         prime_apple.change(on_grid_random(), prime_apple_randomizer())
         normal_apple.change(on_grid_random(), normal_apple_randomizer())
         snake.grow()
-        Counter = Counter + 1
+        snake.counter = snake.counter+ 1
 
     if snake.collision(normal_apple.pos):
         snake.snake_reset()
@@ -162,7 +164,7 @@ while True:
         game_over_rect.midtop = (600 / 2, 10)
         screen.blit(game_over_screen, game_over_rect)
         score_font = pygame.font.Font('freesansbold.ttf', 30)
-        score_screen = score_font.render(f'Pontuação final: {Counter}', True, (255, 255, 255))
+        score_screen = score_font.render(f'Pontuação final: {snake.counter}', True, (255, 255, 255))
         score_rect = score_screen.get_rect()
         score_rect.midtop = (600 / 2, 100)
         screen.blit(score_screen, score_rect)

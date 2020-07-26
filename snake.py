@@ -8,13 +8,16 @@ LEFT = 3
 
 
 class Snake:
+    """
+    This class is responsible for the cration and update of the Snake Object
+    """
     def __init__(self, skin, SCREEN_SIZE):
         self.SCREEN_SIZE = SCREEN_SIZE
         self.snake = [(20, 20), (21, 20), (22, 20)]
         self.skin = skin
         self.direction = LEFT
         self.fast = False
-
+        self.counter = 0
     def listen(self, event):
         """
         This method recives a key from a event, then move the snake
@@ -125,9 +128,10 @@ class Snake:
 
     def snake_reset(self):
         """
-        This method resets the snake position and size when eat the wrong apple
+        This method resets the snake position, score and size when eat the wrong apple
         :return:
         """
         self.snake = [(20, 20), (21, 20), (22, 20)]
         self.direction = LEFT
         self.fast = False
+        self.counter = 0

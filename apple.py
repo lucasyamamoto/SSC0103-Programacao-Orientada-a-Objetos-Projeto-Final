@@ -1,4 +1,7 @@
 class Apple:
+    """
+    This class os reponsible for the cration and update of the Apple object
+    """
     def __init__(self, sprite, pos, num, font):
         self.sprite = sprite
         self.pos = pos
