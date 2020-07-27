@@ -1,4 +1,5 @@
 import pygame
+import os
 from equation.element import GameObject, CircularObject, RectangularObject
 
 class Level:
@@ -173,23 +174,25 @@ class LevelManager:
         :raise IOError: File doesn't follow the format required
         """
         level_obj = []
+        current_path = os.path.dirname(os.path.realpath(__file__))
+        file_path = os.path.join(current_path, file_name)
         # Read object from file
-        with open(file_name, 'r') as f:
+        with open(file_path, 'r') as f:
             obj = f.readline()
             while obj:
                 # Parse line from file
                 obj = obj.rstrip().split(',')
                 # Check if object is a wall
                 if obj[0] == 'Wall' and len(obj) == 6:
-                    image = pygame.image.load(obj[5]).convert_alpha() if obj[5] != 'None' else None
+                    image = pygame.image.load(os.path.join(current_path, obj[5])).convert_alpha() if obj[5] != 'None' else None
                     level_obj.append(RectangularObject(obj[0], int(obj[1]), int(obj[2]), int(obj[3]), int(obj[4]), image))
                 # Check if object is a goal
                 elif obj[0] == 'Goal' and len(obj) == 5:
-                    image = pygame.image.load(obj[4]).convert_alpha() if obj[4] != 'None' else None
+                    image = pygame.image.load(os.path.join(current_path, obj[4])).convert_alpha() if obj[4] != 'None' else None
                     level_obj.append(CircularObject(obj[0], int(obj[1]), int(obj[2]), int(obj[3]), image))
                 # Check if object is a ball
                 elif obj[0] == 'Ball' and len(obj) == 5:
-                    image = pygame.image.load(obj[4]).convert_alpha() if obj[4] != 'None' else None
+                    image = pygame.image.load(os.path.join(current_path, obj[4])).convert_alpha() if obj[4] != 'None' else None
                     level_obj.append(CircularObject(obj[0], int(obj[1]), int(obj[2]), int(obj[3]), image))
                 # Then file doesn't follow any of the specifications
                 else:
