@@ -1,8 +1,8 @@
 
 import pygame
-from element import GameObject, CircularObject, RectangularObject
-from level import LevelManager, Level
-from interface import InterfaceManager, MainMenu, LevelSelection, GameInterface, LevelCompletedInterface, PopUp, InterfaceElement, TextBox, InteractiveTextBox
+from equation.element import GameObject, CircularObject, RectangularObject
+from equation.level import LevelManager, Level
+from equation.interface import InterfaceManager, MainMenu, LevelSelection, GameInterface, LevelCompletedInterface, PopUp, InterfaceElement, TextBox, InteractiveTextBox
 
 class Equation:
 	"""Main game class"""

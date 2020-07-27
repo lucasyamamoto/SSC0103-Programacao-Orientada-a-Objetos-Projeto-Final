@@ -1,6 +1,6 @@
 import pygame
 from abc import ABC, abstractmethod
-from level import Level
+from equation.level import Level
 
 class InterfaceManager(ABC):
     """Generic interface"""

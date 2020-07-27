@@ -1,5 +1,5 @@
 import pygame
-from element import GameObject, CircularObject, RectangularObject
+from equation.element import GameObject, CircularObject, RectangularObject
 
 class Level:
     """Level which administrates the game objects inside it"""

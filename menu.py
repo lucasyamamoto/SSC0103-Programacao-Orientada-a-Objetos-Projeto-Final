@@ -1,5 +1,9 @@
 import pygame
 from pygame.locals import *
+from NUMBERS.magicnumber_game import MagicNumber
+from equation.equation import Equation
+from snake.snake_script import SnakeGame
+
 
 BACKGROUND = (200, 200, 200)
 FOREGROUND = (0, 0, 0)
@@ -79,7 +83,7 @@ class Menu:
                 pos=(0, 300)
             ),
             MenuItem(
-                'Numbers',
+                'Magic Numbers',
                 pygame.image.load('images/equation.png'),
                 font,
                 pos=(0, 450)
@@ -97,6 +101,35 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
+                if event.type == MOUSEBUTTONDOWN:
+                    if self.options[0].collision(pygame.mouse.get_pos()):
+                        # Snake
+                        self.screen = pygame.display.set_mode((600, 600))
+                        pygame.display.set_caption ('Snake')
+                        
+                        game = SnakeGame(600)
+                        game.main(self.screen)
+                        self.screen = pygame.display.set_mode((600, 600))
+
+
+                    elif self.options[1].collision(pygame.mouse.get_pos()):
+                        # Equation
+                        self.screen = pygame.display.set_mode((800, 600))
+                        pygame.display.set_caption ('Equation')
+
+                        game = Equation(self.screen)
+                        game.main()
+                        self.screen = pygame.display.set_mode((600, 600))
+
+                    elif self.options[2].collision(pygame.mouse.get_pos()):
+                        # Numbers
+                        self.screen = pygame.display.set_mode((600, 525))
+                        pygame.display.set_caption ('Magic Numbers')
+
+                        game = MagicNumber()
+                        game.main(self.screen)
+                        self.screen = pygame.display.set_mode((600, 600))
+                        
 
             text = 'Menu'
             (w, h) = self.font.size(text)

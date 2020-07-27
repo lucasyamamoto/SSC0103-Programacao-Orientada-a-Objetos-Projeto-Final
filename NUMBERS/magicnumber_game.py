@@ -192,7 +192,9 @@ class MagicNumber:
 
         running = True
 
+
         while running:
+            ttt.fill((250,250,250))
             for event in pygame.event.get():
                 if event.type is QUIT:
                     running = False
@@ -203,8 +205,10 @@ class MagicNumber:
                         self.restartGame(board)
                         self.makesSquare()
                 
-                self.gameWon (board)
-                self.showBoard (ttt, board)
+            self.gameWon (board)
+            self.showBoard (ttt, board)
+            pygame.display.update()
+
 
 # --------------------------------------------------------------------
 
