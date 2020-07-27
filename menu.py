@@ -123,7 +123,7 @@ class Menu:
 
                     elif self.options[2].collision(pygame.mouse.get_pos()):
                         # Numbers
-                        self.screen = pygame.display.set_mode((600, 525))
+                        self.screen = pygame.display.set_mode((600, 725))
                         pygame.display.set_caption ('Magic Numbers')
 
                         game = MagicNumber()
