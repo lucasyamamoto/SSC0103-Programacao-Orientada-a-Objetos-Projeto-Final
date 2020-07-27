@@ -1,8 +1,8 @@
 import pygame
 import random
 from pygame.locals import *
-from snake import Snake
-from apple import Apple
+from snake.snake import Snake
+from snake.apple import Apple
 """
 Created by Igor Lovatto Resende
 N USP 10439099
