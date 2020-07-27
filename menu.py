@@ -84,7 +84,7 @@ class Menu:
             ),
             MenuItem(
                 'Magic Numbers',
-                pygame.image.load('images/equation.png'),
+                pygame.image.load('images/numbers.png'),
                 font,
                 pos=(0, 450)
             ),
